@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common'; // 👈 necesario para *ngIf
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -10,12 +11,16 @@ import { CommonModule } from '@angular/common'; // 👈 necesario para *ngIf
 })
 export class Navbar {
   showDropdown = false;
+  constructor(private router: Router) {}
 
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
   }
 
-
+  navigate(route: string) {
+    this.router.navigateByUrl(route);
+    this.showDropdown = false; // también cierra el dropdown
+  }
 
   @HostListener('document:click', ['$event'])
 handleClickOutside(event: MouseEvent) {
