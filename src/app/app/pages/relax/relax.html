@@ -1,0 +1,178 @@
+<div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Zona de Relax</h1>
+    <p class="mb-4 text-gray-600">Disfruta de la repetición infinita de tus audios favoritos.</p>
+  
+
+    <div class="mb-4">
+      <button
+        (click)="mostrarFormulario = !mostrarFormulario"
+        class="bg-gray-600 text-white px-4 py-2 rounded shadow hover:bg-gray-700"
+      >
+        {{ mostrarFormulario ? 'Ocultar configuración' : 'Mostrar configuración' }}
+      </button>
+    </div>
+    
+ 
+      <div *ngIf="mostrarFormulario" class="mb-6 flex flex-wrap gap-6 items-center">
+
+        <!-- <div *ngIf="datosFiltrados[indiceActual]" class="mb-4">
+          <p class="text-lg">
+            {{ datos[indiceActual]?.espanol }} - {{ datos[indiceActual]?.ingles }}
+          </p>
+          <p class="text-sm text-gray-500 mt-1">Etapa: {{ ['Español', 'Hope', 'Thomas'][etapa] }}</p>
+        </div> -->
+        <div class="mt-4">
+            <button
+              (click)="aplicarFiltros()"
+              class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
+            >
+              Aplicar filtros
+            </button>
+          </div>
+          
+
+      <label class="inline-flex items-center gap-2">
+        <input type="checkbox" [(ngModel)]="ordenAleatorio" class="mr-2" />
+        Ordenar aleatoriamente
+      </label>
+      
+        <label class="inline-flex items-center gap-2">
+          Repeticiones Hope:
+          <input
+            type="number"
+            min="0"
+            [(ngModel)]="repeticionesHope"
+            class="border px-2 py-1 rounded w-20"
+          />
+        </label>
+      
+        <label class="inline-flex items-center gap-2">
+          Repeticiones Thomas:
+          <input
+            type="number"
+            min="0"
+            [(ngModel)]="repeticionesThomas"
+            class="border px-2 py-1 rounded w-20"
+          />
+        </label>
+      </div>
+      
+
+    <div *ngIf="mostrarFormulario" class="mb-4 flex flex-wrap gap-4 items-center">
+        <!-- Checkbox para reproducir español -->
+        <label class="inline-flex items-center">
+          <input type="checkbox" [(ngModel)]="reproducirEspanol" class="mr-2" />
+          <span>Reproducir audio en español</span>
+        </label>
+      
+        <!-- Input para segundos de espera -->
+        <label class="inline-flex items-center">
+          <span class="mr-2">Espera entre audios (seg):</span>
+          <input
+            type="number"
+            [(ngModel)]="tiempoEsperaSegundos"
+            class="border px-2 py-1 rounded w-20"
+            min="0"
+          />
+        </label>
+
+        <div class="mb-4">
+            <label class="block font-semibold mb-2">Selecciona uno o más grupos:</label>
+            <div class="mb-4">
+                <label class="block font-semibold mb-2">Grupos:</label>
+                <ng-select
+                  [items]="gruposDisponibles"
+                  bindLabel="grupo"
+                  [multiple]="true"
+                  [closeOnSelect]="false"
+                  [(ngModel)]="gruposSeleccionados"
+                  placeholder="Selecciona uno o más grupos"
+           
+                >
+                </ng-select>
+              </div>
+              
+          </div>
+
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">Categorías:</label>
+            <ng-select
+              [items]="categoriasDisponibles"
+              bindLabel="categoria"
+              [multiple]="true"
+              [closeOnSelect]="false"
+              [(ngModel)]="categoriasSeleccionadas"
+              placeholder="Selecciona una o más categorías"
+
+            >
+            </ng-select>
+          </div>
+          
+          
+          
+      </div>
+      
+  
+
+
+      <div class="mb-6 flex gap-4">
+        <button
+          *ngIf="!reproduccionActiva"
+          (click)="iniciarReproduccion()"
+          class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700"
+        >
+          ▶ Iniciar reproducción
+        </button>
+      
+        <!-- <button
+          *ngIf="reproduccionActiva"
+          (click)="pausarReproduccion()"
+          class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700"
+        >
+          ⏸ Pausar reproducciónssssssssssssssss
+        </button> -->
+      </div>
+      
+      
+
+      <!-- Inicio tarjeta -->
+      <div *ngIf="datosFiltrados.length" class="max-w-sm mx-auto mt-6">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-4">
+          
+          <!-- Imagen centrada -->
+          <div class="flex justify-center mb-4">
+            <img
+              [src]="datosFiltrados[indiceActual]?.img"
+              alt="Imagen actual"
+              class="h-40 object-contain rounded"
+            />
+          </div>
+      
+          <!-- Contenido textual -->
+          <div class="text-center">
+            <h2 class="text-xl font-bold mb-1">
+              {{ datosFiltrados[indiceActual]?.espanol }} - 
+              <span class="text-indigo-600">{{ datosFiltrados[indiceActual]?.ingles }}</span>
+            </h2>
+      
+            <p class="text-sm text-gray-600">
+              Etapa actual: 
+              <span class="font-medium text-blue-700">
+                {{ getNombreEtapa(etapasItem[etapaActualIndex]) }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      
+      
+
+      <!-- fin tarjeta  -->
+      
+      <audio #player (ended)="siguienteEtapa()" controls class="w-full mt-4"></audio>
+
+  
+      
+  </div>
+  

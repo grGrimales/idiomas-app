@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Component } from '@angular/core';
 import { Listening } from './app/pages/listening/listening';
+import { Relax } from './app/pages/relax/relax';
 
 
 
@@ -14,5 +15,6 @@ export class HomeComponent {}
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'ingles/listening', component: Listening },
+  { path: 'ingles/relax', component: Relax }, // 👈 nueva ruta
 
 ];
