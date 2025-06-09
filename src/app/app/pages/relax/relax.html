@@ -4,6 +4,7 @@
   
 
     <div class="mb-4">
+
       <button
         (click)="mostrarFormulario = !mostrarFormulario"
         class="bg-gray-600 text-white px-4 py-2 rounded shadow hover:bg-gray-700"
@@ -14,6 +15,14 @@
     
  
       <div *ngIf="mostrarFormulario" class="mb-6 flex flex-wrap gap-6 items-center">
+
+        <div class="mb-4">
+          <label class="font-semibold mr-2">Selecciona hoja:</label>
+          <select [(ngModel)]="hojaSeleccionada" (change)="cargarDatosDesdeHoja()" class="border px-2 py-1 rounded">
+            <option *ngFor="let hoja of hojasDisponibles" [value]="hoja">{{ hoja }}</option>
+          </select>
+        </div>
+        
 
         <!-- <div *ngIf="datosFiltrados[indiceActual]" class="mb-4">
           <p class="text-lg">

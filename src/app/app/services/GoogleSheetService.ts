@@ -5,12 +5,20 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GoogleSheetService {
-  private csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSKXkZHJe7A-SVqY757zfXrbaqu6gREDsIMxJDOUOUhldjfFyEy1echgmUaBsJrOedKkJrxyvl56P2m/pub?output=csv';
+  private hojas: Record<string, string> = {
+    lucia: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSKXkZHJe7A-SVqY757zfXrbaqu6gREDsIMxJDOUOUhldjfFyEy1echgmUaBsJrOedKkJrxyvl56P2m/pub?output=csv',
+    carlos_grediana: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSKXkZHJe7A-SVqY757zfXrbaqu6gREDsIMxJDOUOUhldjfFyEy1echgmUaBsJrOedKkJrxyvl56P2m/pub?gid=966171772&single=true&output=csv',
+  };
 
   constructor(private http: HttpClient) {}
 
-  getCsvData(): Observable<any[]> {
-    return this.http.get(this.csvUrl, { responseType: 'text' }).pipe(
+  getCsvData(nombreHoja: string): Observable<any[]> {
+    const url = this.hojas[nombreHoja];
+    if (!url) {
+      throw new Error(`No se encontró una hoja con el nombre: ${nombreHoja}`);
+    }
+
+    return this.http.get(url, { responseType: 'text' }).pipe(
       map(text => {
         const lines = text.split('\n');
         const headers = lines[0].split(',');

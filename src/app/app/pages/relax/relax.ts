@@ -12,6 +12,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrls: ['./relax.css'],
 })
 export class Relax implements OnInit {
+
+  hojaSeleccionada: string = 'lucia';
+  hojasDisponibles: string[] = ['lucia', 'carlos_grediana'];
   datos: any[] = [];
   indiceActual = 0;
   etapa = 0; // 0: español, 1: hope, 2: thomas
@@ -52,7 +55,7 @@ export class Relax implements OnInit {
   constructor(private sheetService: GoogleSheetService) { }
 
   ngOnInit(): void {
-    this.sheetService.getCsvData().subscribe((res) => {
+    this.sheetService.getCsvData(this.hojaSeleccionada).subscribe((res) => {
       this.datos = res;
 
       this.gruposDisponibles = [...new Set(this.datos.map(item => item.grupo))];
@@ -66,7 +69,14 @@ export class Relax implements OnInit {
 
   }
 
-
+  cargarDatosDesdeHoja() {
+    this.sheetService.getCsvData(this.hojaSeleccionada).subscribe((res) => {
+      this.datos = res;
+      this.gruposDisponibles = [...new Set(this.datos.map(item => item.grupo))];
+      this.categoriasDisponibles = [...new Set(this.datos.map(item => item.categoria))];
+      this.aplicarFiltros();
+    });
+  }
   reproducirActual() {
     if (!this.datos.length) return;
 

@@ -20,6 +20,9 @@ export class Listening implements OnInit {
   niveles: string[] = [];
   repasarLuciaOptions: string[] = [];
 
+  hojasDisponibles = ['lucia', 'carlos_grediana'];
+  hojaSeleccionada = 'lucia';
+
   // Valores seleccionados
   grupoSeleccionado = '';
   categoriaSeleccionada = '';
@@ -29,8 +32,13 @@ export class Listening implements OnInit {
   constructor(private sheetService: GoogleSheetService) { }
 
   ngOnInit() {
-    this.sheetService.getCsvData().subscribe((res) => {
-      console.log('Datos obtenidos:', res);
+
+    this.cargarDatos(this.hojaSeleccionada);
+   
+  }
+
+  cargarDatos(hoja: string) {
+    this.sheetService.getCsvData(hoja).subscribe((res) => {
       this.data = res;
 
       this.grupos = [...new Set(this.data.map(item => item['grupo']))];
@@ -40,6 +48,10 @@ export class Listening implements OnInit {
 
       this.resultadosFiltrados = [...this.data];
     });
+  }
+
+  onSelectHojaChange() {
+    this.cargarDatos(this.hojaSeleccionada);
   }
 
   filtrar() {
