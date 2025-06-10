@@ -6,8 +6,10 @@ import { map, tap } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class GoogleSheetService {
   private hojas: Record<string, string> = {
-    lucia: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSKXkZHJe7A-SVqY757zfXrbaqu6gREDsIMxJDOUOUhldjfFyEy1echgmUaBsJrOedKkJrxyvl56P2m/pub?output=csv',
-    carlos_grediana: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSKXkZHJe7A-SVqY757zfXrbaqu6gREDsIMxJDOUOUhldjfFyEy1echgmUaBsJrOedKkJrxyvl56P2m/pub?gid=966171772&single=true&output=csv',
+    lucia: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSKXkZHJe7A-SVqY757zfXrbaqu6gREDsIMxJDOUOUhldjfFyEy1echgmUaBsJrOedKkJrxyvl56P2m/pub?gid=0&single=true&output=tsv',
+  
+  
+    carlos_grediana: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSKXkZHJe7A-SVqY757zfXrbaqu6gREDsIMxJDOUOUhldjfFyEy1echgmUaBsJrOedKkJrxyvl56P2m/pub?gid=966171772&single=true&output=tsv',
   };
 
   constructor(private http: HttpClient) {}
@@ -47,9 +49,9 @@ export class GoogleSheetService {
     return this.http.get(url, { responseType: 'text' }).pipe(
       map(text => {
         const lines = text.split('\n');
-        const headers = lines[0].split(',');
+        const headers = lines[0].split('  ');
         const data = lines.slice(1).map(line => {
-          const values = line.split(',');
+          const values = line.split(' ');
           const obj: any = {};
           headers.forEach((header, i) => {
             obj[header.trim()] = values[i]?.trim();
