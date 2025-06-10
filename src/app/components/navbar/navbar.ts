@@ -19,9 +19,26 @@ export class Navbar {
   }
 
   refreshData(nombreHoja: string) {
-    this.sheetService.refreshCsvData(nombreHoja).subscribe(() => {
-      alert(`Datos de la hoja "${nombreHoja}" actualizados correctamente`);
+    this.sheetService.refreshCsvData('lucia').subscribe({
+      next: (data) => {
+
+        // Aquí podrías hacer algo con los datos actualizados, como mostrarlos en la UI
+      },
+      error: (error) => {
+        console.error('Error al actualizar los datos:', error);
+      }
     });
+    // Llama al método de refresco de datos para la hoja especificada
+    this.sheetService.refreshCsvData('carlos_grediana').subscribe({
+      next: (data) => {
+
+        // Aquí podrías hacer algo con los datos actualizados, como mostrarlos en la UI
+      },
+      error: (error) => {
+        console.error('Error al actualizar los datos:', error);
+      }
+    });
+
   }
   
   navigate(route: string) {
