@@ -1,93 +1,160 @@
-<div class="p-4">
-  <button (click)="alternarFiltros()" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">
-    {{ mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros' }}
-  </button>
-</div>
+<div class="p-6 max-w-6xl mx-auto bg-white rounded-lg shadow-xl">
+  <div class="mb-6 text-center">
+    <button
+      (click)="alternarFiltros()"
+      class="bg-indigo-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200 ease-in-out text-lg"
+    >
+      {{ mostrarFiltros ? 'Ocultar Filtros 🔽' : 'Mostrar Filtros 🔼' }}
+    </button>
+  </div>
 
-<div *ngIf="mostrarFiltros" class="p-4">
-  <div class="p-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+  <div *ngIf="mostrarFiltros" class="bg-gray-50 p-6 rounded-lg mb-8 border border-gray-200">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Opciones de Filtrado</h2>
 
-    <!-- Selección de hoja -->
-<div class="p-4">
-  <label class="block mb-2 font-semibold">Selecciona hoja del Excel</label>
-  <select [(ngModel)]="hojaSeleccionada" (change)="onSelectHojaChange()" class="border p-2 rounded w-full">
-    <option *ngFor="let hoja of hojasDisponibles" [value]="hoja">{{ hoja }}</option>
-  </select>
-</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+      <div>
+        <label for="hojaSelect" class="block text-sm font-medium text-gray-700 mb-1">
+          Hoja de Excel
+        </label>
+        <select
+          id="hojaSelect"
+          [(ngModel)]="hojaSeleccionada"
+          (change)="onSelectHojaChange()"
+          class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+        >
+          <option *ngFor="let hoja of hojasDisponibles" [value]="hoja">{{ hoja }}</option>
+        </select>
+      </div>
 
-    <!-- Grupo -->
-    <div>
-      <label class="block mb-1 font-semibold">Grupo</label>
-      <select [(ngModel)]="grupoSeleccionado" (change)="filtrar()" class="border p-2 rounded w-full">
-        <option value="">Todos</option>
-        <option *ngFor="let grupo of grupos" [value]="grupo">{{ grupo }}</option>
-      </select>
+      <div>
+        <label for="grupoSelect" class="block text-sm font-medium text-gray-700 mb-1">
+          Grupo
+        </label>
+        <select
+          id="grupoSelect"
+          [(ngModel)]="grupoSeleccionado"
+          (change)="filtrar()"
+          class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+        >
+          <option value="">Todos</option>
+          <option *ngFor="let grupo of grupos" [value]="grupo">{{ grupo }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="categoriaSelect" class="block text-sm font-medium text-gray-700 mb-1">
+          Categoría
+        </label>
+        <select
+          id="categoriaSelect"
+          [(ngModel)]="categoriaSeleccionada"
+          (change)="filtrar()"
+          class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+        >
+          <option value="">Todas</option>
+          <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="nivelSelect" class="block text-sm font-medium text-gray-700 mb-1">
+          Nivel
+        </label>
+        <select
+          id="nivelSelect"
+          [(ngModel)]="nivelSeleccionado"
+          (change)="filtrar()"
+          class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+        >
+          <option value="">Todos</option>
+          <option *ngFor="let nivel of niveles" [value]="nivel">{{ nivel }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="repasarLuciaSelect" class="block text-sm font-medium text-gray-700 mb-1">
+          ¿Repasar Lucía?
+        </label>
+        <select
+          id="repasarLuciaSelect"
+          [(ngModel)]="repasarLuciaSeleccionado"
+          (change)="filtrar()"
+          class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+        >
+          <option value="">Todos</option>
+          <option *ngFor="let op of repasarLuciaOptions" [value]="op">{{ op }}</option>
+        </select>
+      </div>
     </div>
 
-    <!-- Categoría -->
-    <div>
-      <label class="block mb-1 font-semibold">Categoría</label>
-      <select [(ngModel)]="categoriaSeleccionada" (change)="filtrar()" class="border p-2 rounded w-full">
-        <option value="">Todas</option>
-        <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
-      </select>
-    </div>
+    <hr class="my-6 border-gray-200" />
 
-    <!-- Nivel -->
-    <div>
-      <label class="block mb-1 font-semibold">Nivel</label>
-      <select [(ngModel)]="nivelSeleccionado" (change)="filtrar()" class="border p-2 rounded w-full">
-        <option value="">Todos</option>
-        <option *ngFor="let nivel of niveles" [value]="nivel">{{ nivel }}</option>
-      </select>
-    </div>
+    <div class="p-4 bg-white rounded-lg shadow-inner">
+      <label class="block font-semibold text-gray-800 mb-3 text-lg">
+        Selecciona las voces para audio en inglés:
+      </label>
 
-    <!-- Repasar Lucía -->
-    <div>
-      <label class="block mb-1 font-semibold">¿Repasar Lucía?</label>
-      <select [(ngModel)]="repasarLuciaSeleccionado" (change)="filtrar()" class="border p-2 rounded w-full">
-        <option value="">Todos</option>
-        <option *ngFor="let op of repasarLuciaOptions" [value]="op">{{ op }}</option>
-      </select>
+      <div class="flex flex-wrap gap-6 items-center">
+        <label class="inline-flex items-center text-gray-900 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="vocesSeleccionadas.includes('hope')"
+            (change)="onCheckboxChange($event, 'hope')"
+            class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500"
+          />
+          <span class="ml-2 text-base">Hope</span>
+        </label>
+
+        <label class="inline-flex items-center text-gray-900 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="vocesSeleccionadas.includes('thomas')"
+            (change)="onCheckboxChange($event, 'thomas')"
+            class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500"
+          />
+          <span class="ml-2 text-base">Thomas</span>
+        </label>
+      </div>
     </div>
   </div>
 
-</div>
+  <h2 *ngIf="resultadosFiltrados.length > 0" class="text-2xl font-bold text-gray-800 mb-6 text-center">
+    Resultados de la Búsqueda
+  </h2>
+  <p *ngIf="resultadosFiltrados.length === 0 && mostrarFiltros" class="text-center text-gray-600 text-lg mt-4">
+    No hay resultados que coincidan con los filtros aplicados.
+  </p>
 
-<!-- Seleccionar voz -->
-<div *ngIf="mostrarFiltros" class="p-4">
-  <div class="p-4">
-    <label class="block font-semibold mb-2">Selecciona las voces para audio en inglés:</label>
 
-    <label class="inline-flex items-center mr-4">
-      <input type="checkbox" [checked]="vocesSeleccionadas.includes('hope')"
-        (change)="onCheckboxChange($event, 'hope')" />
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div *ngFor="let item of resultadosFiltrados" class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 p-5 flex flex-col items-center text-center">
+      <h3 class="text-xl font-bold text-gray-900 mb-2">
+        {{ item.espanol }} - <span class="text-indigo-600">{{ item.ingles }}</span>
+      </h3>
 
-      <span class="ml-2">Hope</span>
-    </label>
+      <img
+        [src]="item.img || 'https://via.placeholder.com/100'"
+        alt="Imagen"
+        class="my-3 max-h-36 w-auto object-contain rounded-lg border border-gray-100 p-1"
+      />
 
-    <label class="inline-flex items-center">
-      <input type="checkbox" [checked]="vocesSeleccionadas.includes('thomas')"
-        (change)="onCheckboxChange($event, 'thomas')" />
+      <div class="w-full mt-2">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Audio en Español:</label>
+        <audio controls [src]="item['audio-espanol']" class="w-full"></audio>
+      </div>
 
-      <span class="ml-2">Thomas</span>
-    </label>
-  </div>
-</div>
+      <div *ngFor="let voz of vocesSeleccionadas" class="w-full mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1 capitalize">
+          Audio en Inglés (Voz: {{ voz }}):
+        </label>
+        <audio controls [src]="item['audio-ingles-' + voz]" class="w-full"></audio>
+      </div>
 
-<!-- Resultados -->
-<div class="p-4 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-  <div *ngFor="let item of resultadosFiltrados" class="border rounded p-4 shadow">
-    <h3 class="text-lg font-bold">{{ item.espanol }} - {{ item.ingles }}</h3>
-    <img [src]="item.img" alt="Imagen" class="my-2 max-h-32 object-contain" />
-    <audio controls [src]="item['audio-espanol']"></audio>
-    <div *ngFor="let voz of vocesSeleccionadas">
-      <label class="block text-sm text-gray-500 mt-2 capitalize">Voz: {{ voz }}</label>
-      <audio controls [src]="item['audio-ingles-' + voz]"></audio>
+      <p class="text-sm text-gray-600 mt-4 flex flex-wrap justify-center gap-x-3">
+        <span class="font-medium">Grupo:</span> {{ item.grupo }}
+        <span class="font-medium">Nivel:</span> {{ item.nivel }}
+        <span class="font-medium">Categoría:</span> {{ item.categoria }}
+      </p>
     </div>
-
-    <p class="text-sm text-gray-600 mt-2">
-      Grupo: {{ item.grupo }} | Nivel: {{ item.nivel }} | Categoría: {{ item.categoria }}
-    </p>
   </div>
 </div>
