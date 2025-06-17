@@ -1,0 +1,28 @@
+/* Estas son las animaciones para el dropdown, puedes ponerlas en navbar.css o en styles.css */
+@keyframes fade-in-down {
+    from {
+      opacity: 0;
+      transform: translateY(-10px) translateX(-50%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) translateX(-50%);
+    }
+  }
+  
+  .animate-fade-in-down {
+    animation: fade-in-down 0.2s ease-out forwards;
+  }
+  
+  /* Opcional: Estilo para prevenir que el dropdown se cierre inmediatamente al perder el foco */
+  /* Puedes mantenerlo si sientes que mejora el comportamiento en ciertos escenarios,
+     aunque el (mousedown).preventDefault() y el HostListener son más robustos.
+     Personalmente, a menudo lo omito si la otra lógica es sólida. */
+  .group:focus-within .absolute {
+    display: block;
+  }
+  
+  /* Si tu navegador por defecto aplica un outline feo al foco, puedes resetearlo */
+  button:focus, a:focus {
+    outline: none; /* Considera usar un outline de accesibilidad más sutil */
+  }

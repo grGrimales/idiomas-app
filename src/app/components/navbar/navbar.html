@@ -1,48 +1,54 @@
-<nav class="bg-blue-600 text-white p-4 shadow">
-    <div class="container mx-auto flex justify-between items-center">
-      <a class="text-xl font-bold" >IdiomasApp</a>
-      <ul class="flex gap-6 items-center relative">
-    <!-- ...otros botones del dropdown -->
+<nav class="bg-gradient-to-r from-blue-700 to-blue-900 text-white p-4 shadow-lg">
+  <div class="container mx-auto flex justify-between items-center">
+    <a routerLink="/" class="text-3xl font-extrabold tracking-wide hover:text-yellow-300 transition duration-300 ease-in-out">
+      IdiomasApp
+    </a>
 
-  <button (click)="refreshData('lucia')" class="w-full text-left px-4 py-2 hover:bg-gray-100">
-    🔄 Refrescar datos
-  </button>
+    <ul class="flex items-center space-x-6">
+      <li>
+        <button
+          (click)="refreshData('global')"
+          class="flex items-center px-4 py-2 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 transition duration-200 ease-in-out"
+          aria-label="Refrescar todos los datos"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004 10.05v-1.277a1.5 1.5 0 012.015-1.428l.519.231m13.084 3.967a8.001 8.001 0 01-15.356 2l-.519-.231a1.5 1.5 0 00-2.015 1.428V14a8 8 0 0015.356-2l.519.231a1.5 1.5 0 012.015-1.428V10a8 8 0 00-15.356 2z"></path></svg>
+          Refrescar Datos
+        </button>
+      </li>
 
-  
-        <!-- Dropdown: Inglés -->
-        <li class="relative" data-dropdown>
-            <button (click)="toggleDropdown()" class="hover:text-yellow-300 focus:outline-none">
-              Inglés ▼
-            </button>
-          
-            <ul
-              *ngIf="showDropdown"
-              class="absolute bg-white text-black rounded shadow-md mt-2 w-40 z-50"
-            >
+      <li class="relative group">
+        <button
+          (click)="toggleDropdown()"
+          (blur)="hideDropdown()" class="flex items-center px-4 py-2 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 transition duration-200 ease-in-out"
+          [attr.aria-expanded]="showDropdown"
+          aria-haspopup="true"
+        >
+          Inglés
+          <svg class="w-4 h-4 ml-1 transform transition-transform duration-200" [class.rotate-180]="showDropdown" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        </button>
 
-            <li>
-              <button (click)="navigate('/')" class="w-full text-left px-4 py-2 hover:bg-gray-100">
-                Home
-              </button>
-            </li>
-            
-            <li>
-              <button (click)="navigate('/ingles/listening')" class="w-full text-left px-4 py-2 hover:bg-gray-100">
-                Listening
-              </button>
-            </li>
-
-            <li>
-              <button (click)="navigate('/ingles/relax')" class="w-full text-left px-4 py-2 hover:bg-gray-100">
-                Relax
-              </button>
-            </li>
-            </ul>
+        <ul
+          *ngIf="showDropdown"
+          class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-xl overflow-hidden animate-fade-in-down origin-top"
+          (mousedown)="$event.preventDefault()" >
+          <li>
+            <a routerLink="/" (click)="navigate('/')" class="block px-4 py-3 hover:bg-gray-100 transition duration-150 ease-in-out text-lg font-medium">
+              Home
+            </a>
           </li>
-          
-          
-          
+          <li>
+            <a routerLink="/ingles/listening" (click)="navigate('/ingles/listening')" class="block px-4 py-3 hover:bg-gray-100 transition duration-150 ease-in-out text-lg font-medium">
+              Listening
+            </a>
+          </li>
+          <li>
+            <a routerLink="/ingles/relax" (click)="navigate('/ingles/relax')" class="block px-4 py-3 hover:bg-gray-100 transition duration-150 ease-in-out text-lg font-medium">
+              Relax
+            </a>
+          </li>
+        </ul>
+      </li>
+
       </ul>
-    </div>
-  </nav>
-  
+  </div>
+</nav>
