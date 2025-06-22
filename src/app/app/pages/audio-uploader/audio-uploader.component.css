@@ -1,0 +1,18 @@
+/* src/app/pages/audio-uploader/audio-uploader.component.css */
+
+/* Estilo para cuando un archivo está siendo arrastrado sobre la zona de drop */
+.drop-zone.drag-over {
+    border-color: #3b82f6; /* Cambia el color del borde a un azul más fuerte */
+    background-color: #eff6ff; /* Un fondo ligeramente más claro */
+  }
+  
+  /* Opcional: Estilo para ocultar los botones de control de audio en navegadores específicos si es necesario */
+  /* Por ejemplo, para Firefox */
+  audio::-moz-range-track {
+    background-color: #ccc;
+  }
+  
+  /* Para Chrome/Safari */
+  audio::-webkit-media-controls-panel {
+    background-color: #f0f0f0;
+  }
