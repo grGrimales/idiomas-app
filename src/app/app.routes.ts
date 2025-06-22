@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Listening } from './app/pages/listening/listening';
 import { Relax } from './app/pages/relax/relax';
 import { AudioUploaderComponent } from './app/pages/audio-uploader/audio-uploader.component';
+import { SelfEvaluationComponent } from './app/pages/self-evaluation/self-evaluation.component';
 
 
 
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'ingles/listening', component: Listening },
   { path: 'ingles/relax', component: Relax }, // 👈 nueva ruta
-  { path: 'audio-uploader', component: AudioUploaderComponent }
+  { path: 'audio-uploader', component: AudioUploaderComponent },
+  { path: 'autoevaluacion', component: SelfEvaluationComponent },
 
 ];
