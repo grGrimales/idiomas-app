@@ -1,12 +1,11 @@
 <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-
   <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl">
     
     <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">
-      {{ isLoginMode ? 'Iniciar Sesión 1' : 'Crear Cuenta' }}
+      {{ isLoginMode ? 'Iniciar Sesión 2' : 'Crear Cuenta' }}
     </h2>
 
-    <form (ngSubmit)="onSubmit()" class="space-y-6">
+    <form class="space-y-6">
       
       <div>
         <label for="email" class="block text-sm font-bold text-gray-700 mb-2">Email</label>
@@ -38,13 +37,13 @@
         {{ errorMessage }}
       </p>
 
-  <button
-  type="submit"
-  class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 cursor-pointer" >
-  {{ isLoginMode ? 'Entrar' : 'Registrarse' }}
-</button>
-
-    </form>
+    </form> <button
+      type="button" 
+      (click)="onSubmit()"
+      class="w-full mt-6 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 cursor-pointer" 
+    >
+      {{ isLoginMode ? 'Entrar' : 'Registrarse' }}
+    </button>
 
     <div class="text-center mt-6">
       <button (click)="onSwitchMode()" class="text-sm text-blue-600 hover:underline">
