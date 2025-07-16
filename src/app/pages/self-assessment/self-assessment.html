@@ -18,14 +18,12 @@
       </div>
 
       <form (ngSubmit)="checkAnswer()">
-        <input 
-          type="text"
-          [(ngModel)]="userAnswer"
-          name="userAnswer"
-          placeholder="Escribe tu respuesta aquí..."
-          class="w-full text-center text-lg p-4 border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500 transition duration-200">
-
-        <button type="submit" class="w-full mt-4 bg-blue-600 text-white font-bold py-4 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
+        <input
+  type="text"
+  [(ngModel)]="userAnswer"
+  name="userAnswer"
+  placeholder="Escribe tu respuesta aquí..."
+  autocomplete="off"  class="w-full text-center text-lg p-4 border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500 transition duration-200">   <button type="submit" class="w-full mt-4 bg-blue-600 text-white font-bold py-4 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
           Verificar Respuesta
         </button>
       </form>

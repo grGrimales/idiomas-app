@@ -3,6 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 // Definimos las interfaces aquí si no están en otro lado
 export interface Playlist {
@@ -36,7 +37,7 @@ export interface Phrase {
   providedIn: 'root'
 })
 export class PlaylistsService {
-  private apiUrl = 'http://localhost:3000/playlists';
+  private apiUrl =  `${environment.backendUrl}/playlists`;
 
   constructor(private http: HttpClient) { }
 

@@ -9,12 +9,14 @@ import { AuthGuard } from './guards/auth.guard';
 import { AudioManagerComponent } from './pages/audio-manager/audio-manager';
 import { SelfAssessmentComponent } from './pages/self-assessment/self-assessment';
 import { AssessmentSetupComponent } from './pages/assessment-setup/assessment-setup';
+import { DeepStudySetupComponent } from './pages/deep-study-setup/deep-study-setup';
+import { DeepStudyViewComponent } from './pages/deep-study-view/deep-study-view';
 
 @Component({
   standalone: true,
   template: `<h1 class="p-4 text-2xl">Página de Inicio</h1>`,
 })
-export class HomeComponent {}
+export class HomeComponent { }
 
 export const routes: Routes = [
   { path: 'auth', component: AuthComponent },
@@ -24,8 +26,11 @@ export const routes: Routes = [
   { path: 'audio-uploader', component: AudioUploaderComponent, canActivate: [AuthGuard] },
   { path: 'autoevaluacion', component: SelfEvaluationComponent, canActivate: [AuthGuard] },
   { path: 'audio-manager', component: AudioManagerComponent, canActivate: [AuthGuard] },
-   { path: 'self-assessment', component: SelfAssessmentComponent, canActivate: [AuthGuard] }, // <-- AÑADE ESTA LÍNEA
-     { path: 'assessment-setup', component: AssessmentSetupComponent, canActivate: [AuthGuard] },
+  { path: 'self-assessment', component: SelfAssessmentComponent, canActivate: [AuthGuard] }, // <-- AÑADE ESTA LÍNEA
+  { path: 'assessment-setup', component: AssessmentSetupComponent, canActivate: [AuthGuard] },
+
+  { path: 'deep-study-setup', component: DeepStudySetupComponent, canActivate: [AuthGuard] },
+  { path: 'deep-study-view', component: DeepStudyViewComponent, canActivate: [AuthGuard] },
 
 
 ];

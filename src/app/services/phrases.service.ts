@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Phrase } from './playlists.service'; // La ruta ahora es local a la carpeta 'services'
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PhrasesService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl =  `${environment.backendUrl}`;
 
   constructor(private http: HttpClient) { }
 
@@ -43,7 +44,11 @@ export class PhrasesService {
     return this.http.post(`${this.apiUrl}/statistics`, body);
   }
 
-    createAssessmentSession(config: any): Observable<Phrase[]> {
+  createAssessmentSession(config: any): Observable<Phrase[]> {
     return this.http.post<Phrase[]>(`${this.apiUrl}/phrases/assessment-session`, config);
+  }
+
+  createDeepStudySession(config: any): Observable<Phrase[]> {
+    return this.http.post<Phrase[]>(`${this.apiUrl}/phrases/deep-study-session`, config);
   }
 }

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth'; // Reemplazar con la URL de tu backend
+  private apiUrl = `${environment.backendUrl}/auth`; // Reemplazar con la URL de tu backend
   private token: string | null = null;
 
   constructor(private http: HttpClient, private router: Router) {
