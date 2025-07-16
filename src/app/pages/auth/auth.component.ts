@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core'; // 1. Importa NgZone
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './auth.component.html',
-  // providers: [AuthService] <-- ELIMINA ESTA LÍNEA
 })
 export class AuthComponent {
   isLoginMode = true;
@@ -17,28 +16,42 @@ export class AuthComponent {
   password = 'password123';
   errorMessage = '';
 
-  // Tu constructor y el resto del código están correctos.
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private zone: NgZone // 2. Inyecta NgZone
+  ) {}
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
   }
 
-  onSubmit() {
-    if (this.isLoginMode) {
-      console.log(this.email, this.password);
-      this.authService.login(this.email, this.password).subscribe({
+  // 3. Nuevo método que será llamado por el botón
+  handleAuth() {
+    // Usamos NgZone.run para garantizar la ejecución dentro del ciclo de Angular
+    this.zone.run(() => {
+      if (!this.email || !this.password) {
+        this.errorMessage = 'Email y contraseña son requeridos.';
+        return;
+      }
+
+      const action = this.isLoginMode
+        ? this.authService.login(this.email, this.password)
+        : this.authService.register(this.email, this.password);
+
+      action.subscribe({
         next: () => {
-          console.log('Login successful');
-          this.router.navigate(['/']); // Ahora esto funcionará
+          if (this.isLoginMode) {
+            this.router.navigate(['/']);
+          } else {
+            this.isLoginMode = true;
+            this.errorMessage = '¡Registro exitoso! Por favor, inicia sesión.';
+          }
         },
-        error: (err) => (this.errorMessage = err.error.message),
+        error: (err) => {
+          this.errorMessage = err.error?.message || 'Ocurrió un error.';
+        },
       });
-    } else {
-      this.authService.register(this.email, this.password).subscribe({
-        next: () => this.onSwitchMode(),
-        error: (err) => (this.errorMessage = err.error.message),
-      });
-    }
+    });
   }
 }
