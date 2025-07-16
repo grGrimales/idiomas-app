@@ -17,9 +17,9 @@ export class AuthComponent {
   errorMessage = '';
 
   constructor(
-    private authService: AuthService,
+   private authService: AuthService,
     private router: Router,
-    private zone: NgZone // 2. Inyecta NgZone
+    private zone: NgZone
   ) {}
 
   onSwitchMode() {
@@ -28,7 +28,6 @@ export class AuthComponent {
 
   // 3. Nuevo método que será llamado por el botón
   handleAuth() {
-    // Usamos NgZone.run para garantizar la ejecución dentro del ciclo de Angular
     this.zone.run(() => {
       if (!this.email || !this.password) {
         this.errorMessage = 'Email y contraseña son requeridos.';
@@ -41,15 +40,12 @@ export class AuthComponent {
 
       action.subscribe({
         next: () => {
-          if (this.isLoginMode) {
-            this.router.navigate(['/']);
-          } else {
-            this.isLoginMode = true;
-            this.errorMessage = '¡Registro exitoso! Por favor, inicia sesión.';
-          }
+          // ... (lógica de éxito)
         },
         error: (err) => {
-          this.errorMessage = err.error?.message || 'Ocurrió un error.';
+          // 👇 === ESTA ES LA LÍNEA MÁS IMPORTANTE === 👇
+          // Convertimos el objeto de error completo a texto para poder verlo.
+          this.errorMessage = `Error Detallado: ${JSON.stringify(err)}`;
         },
       });
     });
