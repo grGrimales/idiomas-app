@@ -7,7 +7,7 @@
     "types": [],
     "baseUrl": "src",
     "paths": {
-      "environments/*": ["environments/*"]
+      "environments/*": ["src/environments/*"]
     }
   },
   "include": [
