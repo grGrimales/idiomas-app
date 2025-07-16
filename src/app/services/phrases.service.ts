@@ -1,0 +1,49 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Phrase } from './playlists.service'; // La ruta ahora es local a la carpeta 'services'
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PhrasesService {
+  private apiUrl = 'http://localhost:3000';
+
+  constructor(private http: HttpClient) { }
+
+  getPhrasesWithMissingAudio(): Observable<Phrase[]> {
+    return this.http.get<Phrase[]>(`${this.apiUrl}/phrases/missing-audio`);
+  }
+
+  uploadAudio(phraseId: string, translationIndex: number, gender: string, file: File): Observable<Phrase> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    // Corregido: Usar 'translationIndex'
+    const url = `${this.apiUrl}/phrases/${phraseId}/translations/${translationIndex}/audio/${gender}`;
+    return this.http.patch<Phrase>(url, formData);
+  }
+
+  getAllPhrases(): Observable<Phrase[]> {
+    return this.http.get<Phrase[]>(this.apiUrl + '/phrases');
+  }
+
+  getPhraseForAssessment(): Observable<Phrase> {
+    return this.http.get<Phrase>(`${this.apiUrl}/phrases/assessment/random`);
+  }
+
+  uploadOriginAudio(phraseId: string, file: File): Observable<Phrase> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.patch<Phrase>(`${this.apiUrl}/phrases/${phraseId}/origin-audio`, formData);
+  }
+
+  updateAssessmentStats(phraseId: string, isCorrect: boolean): Observable<any> {
+    const body = { phraseId, isCorrect };
+    return this.http.post(`${this.apiUrl}/statistics`, body);
+  }
+
+    createAssessmentSession(config: any): Observable<Phrase[]> {
+    return this.http.post<Phrase[]>(`${this.apiUrl}/phrases/assessment-session`, config);
+  }
+}

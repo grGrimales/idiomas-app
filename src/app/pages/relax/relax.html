@@ -1,0 +1,190 @@
+<div class="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-xl">
+  <h1 class="text-3xl font-extrabold text-gray-900 mb-4 text-center">
+    🎧 Zona de Relax
+  </h1>
+  <p class="mb-6 text-gray-700 text-center text-lg">
+    Disfruta de la repetición infinita de tus audios favoritos.
+  </p>
+
+  <div class="text-center mb-6">
+    <button
+      (click)="mostrarFormulario = !mostrarFormulario"
+      class="bg-indigo-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+    >
+      {{ mostrarFormulario ? 'Ocultar Configuración' : 'Mostrar Configuración' }}
+    </button>
+  </div>
+
+  <div *ngIf="mostrarFormulario" class="bg-gray-50 p-6 rounded-lg mb-8 border border-gray-200">
+    <fieldset class="mb-6">
+      <legend class="text-xl font-semibold text-gray-800 mb-4">Ajustes de Reproducción</legend>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <label for="hoja" class="block text-sm font-medium text-gray-700 mb-1">
+            Seleccionar hoja:
+          </label>
+          <select
+            id="hoja"
+            [(ngModel)]="hojaSeleccionada"
+            (change)="cargarDatosDesdeHoja()"
+            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+          >
+            <option *ngFor="let hoja of hojasDisponibles" [value]="hoja">
+              {{ hoja }}
+            </option>
+          </select>
+        </div>
+
+        <div class="flex items-center">
+          <input
+            id="ordenAleatorio"
+            type="checkbox"
+            [(ngModel)]="ordenAleatorio"
+            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+          />
+          <label for="ordenAleatorio" class="ml-2 block text-sm text-gray-900">
+            Ordenar aleatoriamente
+          </label>
+        </div>
+
+        <div class="flex items-center">
+          <input
+            id="reproducirEspanol"
+            type="checkbox"
+            [(ngModel)]="reproducirEspanol"
+            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+          />
+          <label for="reproducirEspanol" class="ml-2 block text-sm text-gray-900">
+            Reproducir audio en español
+          </label>
+        </div>
+
+        <div>
+          <label for="repeticionesHope" class="block text-sm font-medium text-gray-700 mb-1">
+            Repeticiones Hope:
+          </label>
+          <input
+            id="repeticionesHope"
+            type="number"
+            min="0"
+            [(ngModel)]="repeticionesHope"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label for="repeticionesThomas" class="block text-sm font-medium text-gray-700 mb-1">
+            Repeticiones Thomas:
+          </label>
+          <input
+            id="repeticionesThomas"
+            type="number"
+            min="0"
+            [(ngModel)]="repeticionesThomas"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label for="tiempoEspera" class="block text-sm font-medium text-gray-700 mb-1">
+            Espera entre audios (seg):
+          </label>
+          <input
+            id="tiempoEspera"
+            type="number"
+            [(ngModel)]="tiempoEsperaSegundos"
+            min="0"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend class="text-xl font-semibold text-gray-800 mb-4">Filtros de Contenido</legend>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="grupos" class="block text-sm font-medium text-gray-700 mb-1">
+            Grupos:
+          </label>
+          <ng-select
+            id="grupos"
+            [items]="gruposDisponibles"
+            bindLabel="grupo"
+            [multiple]="true"
+            [closeOnSelect]="false"
+            [(ngModel)]="gruposSeleccionados"
+            placeholder="Selecciona uno o más grupos"
+            class="mt-1 block w-full rounded-md shadow-sm"
+          >
+          </ng-select>
+        </div>
+
+        <div>
+          <label for="categorias" class="block text-sm font-medium text-gray-700 mb-1">
+            Categorías:
+          </label>
+          <ng-select
+            id="categorias"
+            [items]="categoriasDisponibles"
+            bindLabel="categoria"
+            [multiple]="true"
+            [closeOnSelect]="false"
+            [(ngModel)]="categoriasSeleccionadas"
+            placeholder="Selecciona una o más categorías"
+            class="mt-1 block w-full rounded-md shadow-sm"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </fieldset>
+    
+    <div class="mt-8 text-center">
+      <button
+        (click)="aplicarFiltros()"
+        class="bg-blue-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+      >
+        Aplicar Filtros
+      </button>
+    </div>
+  </div>
+
+  <div class="flex justify-center mb-6">
+    <button
+      *ngIf="!reproduccionActiva"
+      (click)="iniciarReproduccion()"
+      class="bg-green-600 text-white px-8 py-4 rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 ease-in-out text-lg flex items-center"
+    >
+      <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+      Iniciar Reproducción
+    </button>
+
+    </div>
+
+  <div *ngIf="datosFiltrados.length" class="max-w-md mx-auto mt-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 p-6">
+    <div class="flex justify-center mb-4">
+      <img
+        [src]="datosFiltrados[indiceActual]?.img || 'https://via.placeholder.com/150'"
+        alt="Imagen actual"
+        class="h-48 w-full object-contain rounded-lg border border-gray-200 p-2"
+      />
+    </div>
+
+    <div class="text-center">
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+        {{ datosFiltrados[indiceActual]?.espanol }} -
+        <span class="text-indigo-600">{{ datosFiltrados[indiceActual]?.ingles }}</span>
+      </h2>
+
+      <p class="text-md text-gray-600">
+        Etapa actual:
+        <span class="font-semibold text-blue-700">
+          {{ getNombreEtapa(etapasItem[etapaActualIndex]) }}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <audio #player (ended)="siguienteEtapa()" controls class="w-full mt-8 rounded-lg shadow-md"></audio>
+</div>

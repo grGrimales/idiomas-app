@@ -1,12 +1,14 @@
 import { Routes } from '@angular/router';
 import { Component } from '@angular/core';
-import { Listening } from './app/pages/listening/listening';
-import { Relax } from './app/pages/relax/relax';
-import { AudioUploaderComponent } from './app/pages/audio-uploader/audio-uploader.component';
-import { SelfEvaluationComponent } from './app/pages/self-evaluation/self-evaluation.component';
-
-
-
+import { Listening } from './pages/listening/listening';
+import { Relax } from './pages/relax/relax';
+import { AudioUploaderComponent } from './pages/audio-uploader/audio-uploader.component';
+import { SelfEvaluationComponent } from './pages/self-evaluation/self-evaluation.component';
+import { AuthComponent } from './pages/auth/auth.component';
+import { AuthGuard } from './guards/auth.guard';
+import { AudioManagerComponent } from './pages/audio-manager/audio-manager';
+import { SelfAssessmentComponent } from './pages/self-assessment/self-assessment';
+import { AssessmentSetupComponent } from './pages/assessment-setup/assessment-setup';
 
 @Component({
   standalone: true,
@@ -15,10 +17,15 @@ import { SelfEvaluationComponent } from './app/pages/self-evaluation/self-evalua
 export class HomeComponent {}
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'ingles/listening', component: Listening },
-  { path: 'ingles/relax', component: Relax }, // 👈 nueva ruta
-  { path: 'audio-uploader', component: AudioUploaderComponent },
-  { path: 'autoevaluacion', component: SelfEvaluationComponent },
+  { path: 'auth', component: AuthComponent },
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'ingles/listening', component: Listening, canActivate: [AuthGuard] },
+  { path: 'ingles/relax', component: Relax, canActivate: [AuthGuard] },
+  { path: 'audio-uploader', component: AudioUploaderComponent, canActivate: [AuthGuard] },
+  { path: 'autoevaluacion', component: SelfEvaluationComponent, canActivate: [AuthGuard] },
+  { path: 'audio-manager', component: AudioManagerComponent, canActivate: [AuthGuard] },
+   { path: 'self-assessment', component: SelfAssessmentComponent, canActivate: [AuthGuard] }, // <-- AÑADE ESTA LÍNEA
+     { path: 'assessment-setup', component: AssessmentSetupComponent, canActivate: [AuthGuard] },
+
 
 ];
