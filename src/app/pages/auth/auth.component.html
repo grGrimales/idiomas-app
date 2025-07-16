@@ -3,7 +3,7 @@
   <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl">
     
     <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">
-      {{ isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta' }}
+      {{ isLoginMode ? 'Iniciar Sesión 1' : 'Crear Cuenta' }}
     </h2>
 
     <form (ngSubmit)="onSubmit()" class="space-y-6">
@@ -38,12 +38,11 @@
         {{ errorMessage }}
       </p>
 
-      <button 
-        type="submit"
-        class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
-      >
-        {{ isLoginMode ? 'Entrar' : 'Registrarse' }}
-      </button>
+  <button
+  type="submit"
+  class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 cursor-pointer" >
+  {{ isLoginMode ? 'Entrar' : 'Registrarse' }}
+</button>
 
     </form>
 

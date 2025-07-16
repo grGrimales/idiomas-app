@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css'],
   // providers: [AuthService] <-- ELIMINA ESTA LÍNEA
 })
 export class AuthComponent {
