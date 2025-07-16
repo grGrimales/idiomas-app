@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Phrase } from './playlists.service'; // La ruta ahora es local a la carpeta 'services'
-import { environment } from '../../environments/environment';
+import { environment } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root'
