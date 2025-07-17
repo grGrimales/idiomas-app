@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Phrase } from './playlists.service'; // La ruta ahora es local a la carpeta 'services'
 import { environment } from '../../environments/environment';
@@ -12,8 +12,16 @@ export class PhrasesService {
 
   constructor(private http: HttpClient) { }
 
-  getPhrasesWithMissingAudio(): Observable<Phrase[]> {
-    return this.http.get<Phrase[]>(`${this.apiUrl}/phrases/missing-audio`);
+  getPhrasesWithMissingAudio(sortBy: string = 'createdAt_desc', playlistId?: string): Observable<Phrase[]> {
+    let params = new HttpParams().set('sortBy', sortBy);
+    if (playlistId) {
+      params = params.set('playlistId', playlistId);
+    }
+    return this.http.get<Phrase[]>(`${this.apiUrl}/phrases/missing-audio`, { params });
+  }
+
+  deleteAudio(phraseId: string, translationIndex: number, gender: string): Observable<Phrase> {
+    return this.http.delete<Phrase>(`${this.apiUrl}/phrases/${phraseId}/translations/${translationIndex}/audio/${gender}`);
   }
 
   uploadAudio(phraseId: string, translationIndex: number, gender: string, file: File): Observable<Phrase> {
