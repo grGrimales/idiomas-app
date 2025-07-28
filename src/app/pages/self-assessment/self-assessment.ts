@@ -17,7 +17,7 @@ import { AssessmentResultsModalComponent } from '../../components/assessment-res
   styleUrls: ['./self-assessment.css']
 })
 export class SelfAssessmentComponent implements OnInit, OnDestroy {
-    sessionCorrectAnswers = 0;
+  sessionCorrectAnswers = 0;
   sessionIncorrectAnswers = 0;
   showResultsModal = false;
   private allPhrases: Phrase[] = [];
@@ -56,11 +56,11 @@ export class SelfAssessmentComponent implements OnInit, OnDestroy {
     });
   }
 
- loadNextPhrase(): void {
+  loadNextPhrase(): void {
     if (this.currentIndex < this.allPhrases.length) {
       this.currentPhrase = this.allPhrases[this.currentIndex];
       this.currentIndex++;
-      
+
       this.userAnswer = '';
       this.feedback = null;
       this.assessmentState = 'playing';
@@ -92,11 +92,12 @@ export class SelfAssessmentComponent implements OnInit, OnDestroy {
   checkAnswer(): void {
     if (!this.currentPhrase) return;
 
-    const correctAnswer = this.currentPhrase.translations[0].translatedText.trim();
-    const isCorrect = this.userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase();
+    // Normaliza la respuesta correcta y la del usuario
+    const correctAnswer = this.normalizeText(this.currentPhrase.translations[0].translatedText);
+    const userAnswer = this.normalizeText(this.userAnswer);
+    const isCorrect = userAnswer === correctAnswer;
 
-
-     if (isCorrect) {
+    if (isCorrect) {
       this.sessionCorrectAnswers++;
     } else {
       this.sessionIncorrectAnswers++;
@@ -126,16 +127,27 @@ export class SelfAssessmentComponent implements OnInit, OnDestroy {
   }
 
 
-   restartAssessment(): void {
+  restartAssessment(): void {
     this.showResultsModal = false;
     this.router.navigate(['/assessment-setup']); // Vuelve a la configuración
   }
-  
+
   closeModal(): void {
     this.showResultsModal = false;
     this.router.navigate(['/']); // Vuelve al inicio o dashboard
   }
   ngOnDestroy(): void {
     this.audioPlayer.pause();
+  }
+
+
+  private normalizeText(text: string): string {
+    if (!text) return '';
+
+    let normalized = text.trim().toLowerCase();
+    if (normalized.endsWith('.')) {
+      normalized = normalized.slice(0, -1);
+    }
+    return normalized;
   }
 }

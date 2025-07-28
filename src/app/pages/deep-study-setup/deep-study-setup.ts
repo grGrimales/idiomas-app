@@ -32,6 +32,7 @@ export class DeepStudySetupComponent implements OnInit {
   }
 
   startStudySession(): void {
+    console.log('Configuración de estudio:', this.config);
     this.phrasesService.createDeepStudySession(this.config).subscribe(phrases => {
       if (phrases && phrases.length > 0) {
         this.assessmentService.setPhrases(phrases);
