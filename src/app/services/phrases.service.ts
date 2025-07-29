@@ -13,6 +13,9 @@ export class PhrasesService {
   constructor(private http: HttpClient) { }
 
   getPhrasesWithMissingAudio(sortBy: string = 'createdAt_desc', playlistId?: string): Observable<Phrase[]> {
+
+
+
     let params = new HttpParams().set('sortBy', sortBy);
     if (playlistId) {
       params = params.set('playlistId', playlistId);
