@@ -11,6 +11,7 @@ import { SelfAssessmentComponent } from './pages/self-assessment/self-assessment
 import { AssessmentSetupComponent } from './pages/assessment-setup/assessment-setup';
 import { DeepStudySetupComponent } from './pages/deep-study-setup/deep-study-setup';
 import { DeepStudyViewComponent } from './pages/deep-study-view/deep-study-view';
+import { RelaxNew } from './pages/relax-new/relax-new';
 
 @Component({
   standalone: true,
@@ -22,7 +23,7 @@ export const routes: Routes = [
   { path: 'auth', component: AuthComponent },
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'ingles/listening', component: Listening, canActivate: [AuthGuard] },
-  { path: 'ingles/relax', component: Relax, canActivate: [AuthGuard] },
+  { path: 'ingles/relax', component: RelaxNew, canActivate: [AuthGuard] },
   { path: 'audio-uploader', component: AudioUploaderComponent, canActivate: [AuthGuard] },
   { path: 'autoevaluacion', component: SelfEvaluationComponent, canActivate: [AuthGuard] },
   { path: 'audio-manager', component: AudioManagerComponent, canActivate: [AuthGuard] },

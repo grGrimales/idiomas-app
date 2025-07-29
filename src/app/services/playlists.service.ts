@@ -44,4 +44,8 @@ export class PlaylistsService {
   getPlaylists(): Observable<Playlist[]> {
     return this.http.get<Playlist[]>(this.apiUrl);
   }
+
+  getUserPlaylists(): Observable<Playlist[]> {
+    return this.http.get<Playlist[]>(`${this.apiUrl}/user`);
+  }
 }

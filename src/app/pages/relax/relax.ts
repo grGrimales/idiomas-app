@@ -145,8 +145,8 @@ export class Relax implements OnInit {
       .sort((a, b) => a.sort - b.sort)
       .map(({ item }) => item);
   }
-  
- 
+
+
 
   aplicarFiltros() {
     this.datosFiltrados = this.datos.filter(item => {
@@ -158,21 +158,21 @@ export class Relax implements OnInit {
         this.categoriasSeleccionadas.includes(item.categoria);
       return grupoValido && categoriaValida;
     });
-  
+
     // 👉 Aplica orden aleatorio si está activado
     if (this.ordenAleatorio) {
       this.datosFiltrados = this.shuffleArray(this.datosFiltrados);
     }
-  
+
     this.indiceActual = 0;
     this.etapaActualIndex = 0;
-  
+
     if (this.reproduccionActiva && this.datosFiltrados.length) {
       this.generarEtapasParaItemActual();
       this.reproducirActual();
     }
   }
-  
+
 
 
 
@@ -217,6 +217,6 @@ export class Relax implements OnInit {
     };
     return mapa[etapa] ?? etapa;
   }
-  
+
 
 }

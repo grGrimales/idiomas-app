@@ -1,0 +1,208 @@
+// ... (imports y @Component sin cambios)
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { Subscription } from 'rxjs';
+
+import { Phrase, Playlist } from '../../services/playlists.service';
+import { PhrasesService } from '../../services/phrases.service';
+import { PlaylistsService } from '../../services/playlists.service';
+
+@Component({
+  standalone: true,
+  selector: 'app-relax-new',
+  imports: [CommonModule, FormsModule, NgSelectModule],
+  templateUrl: './relax-new.html',
+})
+export class RelaxNew implements OnInit, OnDestroy {
+  // --- (propiedades del componente sin cambios) ---
+  public isPlaying = false;
+  public settingsDone = false;
+  public isPaused = false;
+  private subscriptions: Subscription = new Subscription();
+  public playlists: Playlist[] = [];
+  public selectedPlaylistId: string | undefined = undefined;
+  public order: 'random' | 'less-heard' = 'random';
+  public limit = 10;
+  public repeatSpanishAudio = true;
+  public repeatCycles = 1;
+  public phrases: Phrase[] = [];
+  public currentPhraseIndex = 0;
+  private currentAudio: HTMLAudioElement | null = null;
+  private cycleCount = 0;
+  private audioQueue: string[] = [];
+  private audioQueueIndex = 0;
+
+  constructor(
+    private phrasesService: PhrasesService,
+    private playlistsService: PlaylistsService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  // --- (ngOnInit, ngOnDestroy, startRelaxSession, loadPhrases sin cambios) ---
+  ngOnInit(): void {
+    const playlistsSub = this.playlistsService.getPlaylists().subscribe({
+      next: (playlists: Playlist[]) => { this.playlists = playlists; },
+    });
+    this.subscriptions.add(playlistsSub);
+  }
+
+  ngOnDestroy(): void {
+    this.stopAudio();
+    this.subscriptions.unsubscribe();
+  }
+
+  public startRelaxSession(): void {
+    if (!this.selectedPlaylistId) {
+      alert('Por favor, selecciona una playlist.');
+      return;
+    }
+    this.settingsDone = true;
+    this.isPlaying = true;
+    this.isPaused = false;
+    this.loadPhrases();
+  }
+
+  private loadPhrases(): void {
+    const config = {
+      playlistId: this.selectedPlaylistId,
+      orderBy: this.order,
+      limit: this.limit,
+    };
+
+    const phrasesSub = this.phrasesService.createRelaxSession(config).subscribe({
+      next: (phrases) => {
+        this.phrases = phrases;
+        this.currentPhraseIndex = 0;
+        
+        if (this.phrases.length > 0) {
+          this.playCurrentPhrase();
+        } else {
+          alert('No se encontraron frases con los filtros seleccionados.');
+          this.changeSettings();
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al cargar frases:', err);
+        alert('No se pudieron cargar las frases.');
+        this.changeSettings();
+      },
+    });
+    this.subscriptions.add(phrasesSub);
+  }
+
+  public togglePause(): void {
+    this.isPaused = !this.isPaused;
+    if (this.isPaused) {
+      this.currentAudio?.pause();
+    } else {
+      if (this.currentAudio) {
+        this.currentAudio.play().catch(e => console.error("Error al reanudar audio:", e));
+      } else {
+        this.playAudioQueue();
+      }
+    }
+  }
+
+  private playCurrentPhrase(): void {
+    if (!this.phrases.length || this.currentPhraseIndex >= this.phrases.length) {
+      this.loadPhrases();
+      return;
+    }
+    const phrase = this.phrases[this.currentPhraseIndex];
+    this.cycleCount = 0;
+    this.playCycle(phrase);
+  }
+
+  private playCycle(phrase: Phrase): void {
+    if (!this.isPlaying || this.isPaused || this.cycleCount >= this.repeatCycles) {
+      if (this.cycleCount >= this.repeatCycles) this.moveToNextPhrase();
+      return;
+    }
+
+    this.audioQueue = [];
+    const femaleAudio = phrase.translations[0]?.audios.find(a => a.gender === 'femenino')?.audioUrl;
+    const maleAudio = phrase.translations[0]?.audios.find(a => a.gender === 'masculino')?.audioUrl;
+
+ if (this.repeatSpanishAudio && phrase.originAudioUrl && phrase.originAudioUrl !== 'audio.pendiente.mp3') {
+      this.audioQueue.push(phrase.originAudioUrl);
+    }
+
+    if (femaleAudio && femaleAudio !== 'audio.pendiente.mp3') this.audioQueue.push(femaleAudio);
+    if (maleAudio && maleAudio !== 'audio.pendiente.mp3') this.audioQueue.push(maleAudio);
+    
+   
+
+    if(this.audioQueue.length === 0) {
+      console.warn(`Sin audios válidos para: "${phrase.originalText}"`);
+      this.moveToNextPhrase();
+      return;
+    }
+
+    this.audioQueueIndex = 0;
+    this.playAudioQueue(() => {
+      this.cycleCount++;
+      this.incrementStat(phrase._id);
+      setTimeout(() => this.playCycle(phrase), 500);
+    });
+  }
+
+  private playAudioQueue(onComplete: () => void = () => {}): void {
+    if (this.isPaused || !this.isPlaying || this.audioQueueIndex >= this.audioQueue.length) {
+      if (this.audioQueueIndex >= this.audioQueue.length) onComplete();
+      return;
+    }
+
+    this.stopAudio(false);
+    const audioUrl = this.audioQueue[this.audioQueueIndex];
+    this.currentAudio = new Audio(audioUrl);
+
+    this.currentAudio.play().catch(e => console.error("Error al reproducir audio:", e));
+    this.currentAudio.onended = () => {
+      this.audioQueueIndex++;
+      this.playAudioQueue(onComplete);
+    };
+    this.currentAudio.onerror = () => {
+      console.warn(`No se pudo reproducir: ${audioUrl}`);
+      this.audioQueueIndex++;
+      this.playAudioQueue(onComplete);
+    };
+  }
+
+  private stopAudio(resetPauseState = true): void {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.src = '';
+      this.currentAudio.onended = null;
+      this.currentAudio.onerror = null;
+      this.currentAudio = null;
+    }
+    if(resetPauseState) {
+        this.isPaused = false;
+    }
+  }
+
+  public moveToNextPhrase(): void {
+    this.currentPhraseIndex++;
+    // --- 👇 AQUÍ ESTÁ LA CORRECCIÓN ---
+    // Forzamos la detección de cambios para que la vista se actualice con la nueva frase.
+    this.cdr.detectChanges(); 
+    this.playCurrentPhrase();
+  }
+
+  private incrementStat(phraseId: string): void {
+    this.phrasesService.incrementRelaxListen(phraseId).subscribe({
+      error: (err) => console.error('Error al actualizar estadísticas:', err),
+    });
+  }
+
+  public changeSettings(): void {
+    this.isPlaying = false;
+    this.stopAudio();
+    this.settingsDone = false;
+    this.phrases = [];
+    this.currentPhraseIndex = 0;
+  }
+}

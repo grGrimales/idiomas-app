@@ -59,4 +59,15 @@ export class PhrasesService {
   createDeepStudySession(config: any): Observable<Phrase[]> {
     return this.http.post<Phrase[]>(`${this.apiUrl}/phrases/deep-study-session`, config);
   }
-}
+
+  incrementRelaxListen(phraseId: string): Observable<any> {
+    console.log('Incrementing relax listen count for phrase:', phraseId);
+    return this.http.post(`${this.apiUrl}/statistics/relax-listen/${phraseId}`, {});
+  }
+
+  createRelaxSession(config: any): Observable<Phrase[]> {
+    return this.http.post<Phrase[]>(`${this.apiUrl}/phrases/relax-session`, config);
+  } 
+
+
+  }
