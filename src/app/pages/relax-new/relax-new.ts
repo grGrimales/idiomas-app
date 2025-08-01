@@ -26,7 +26,7 @@ export class RelaxNew implements OnInit, OnDestroy {
   public order: 'random' | 'less-heard' = 'random';
   public limit = 10;
   public repeatSpanishAudio = true;
-  public repeatCycles = 1;
+  public repeatCycles = 2;
   public phrases: Phrase[] = [];
   public currentPhraseIndex = 0;
   private currentAudio: HTMLAudioElement | null = null;
