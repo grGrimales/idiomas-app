@@ -1,11 +1,11 @@
-// ... (imports y @Component sin cambios)
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Subscription } from 'rxjs';
 
-import { Phrase, Playlist } from '../../services/playlists.service';
+// --- 👇 Asegúrate de importar 'Group' ---
+import { Phrase, Playlist, Group } from '../../services/playlists.service';
 import { PhrasesService } from '../../services/phrases.service';
 import { PlaylistsService } from '../../services/playlists.service';
 
@@ -16,7 +16,7 @@ import { PlaylistsService } from '../../services/playlists.service';
   templateUrl: './relax-new.html',
 })
 export class RelaxNew implements OnInit, OnDestroy {
-  // --- (propiedades del componente sin cambios) ---
+  // --- Propiedades existentes del componente ---
   public isPlaying = false;
   public settingsDone = false;
   public isPaused = false;
@@ -25,6 +25,7 @@ export class RelaxNew implements OnInit, OnDestroy {
   public selectedPlaylistId: string | undefined = undefined;
   public order: 'random' | 'less-heard' = 'random';
   public limit = 10;
+  // ... (otras propiedades existentes) ...
   public repeatSpanishAudio = true;
   public repeatCycles = 2;
   public phrases: Phrase[] = [];
@@ -34,13 +35,19 @@ export class RelaxNew implements OnInit, OnDestroy {
   private audioQueue: string[] = [];
   private audioQueueIndex = 0;
 
+  // --- 👇 NUEVAS PROPIEDADES PARA EL SELECTOR DE GRUPOS ---
+  public allGroups: Group[] = [];
+  public selectedGroups: Group[] = [];
+  public selectedGroupIds: string[] = [];
+  public groupSearchTerm: string = '';
+  public isDropdownOpen: boolean = false;
+
   constructor(
     private phrasesService: PhrasesService,
     private playlistsService: PlaylistsService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
-  // --- (ngOnInit, ngOnDestroy, startRelaxSession, loadPhrases sin cambios) ---
   ngOnInit(): void {
     const playlistsSub = this.playlistsService.getPlaylists().subscribe({
       next: (playlists: Playlist[]) => { this.playlists = playlists; },
@@ -52,6 +59,58 @@ export class RelaxNew implements OnInit, OnDestroy {
     this.stopAudio();
     this.subscriptions.unsubscribe();
   }
+
+  // --- 👇 NUEVOS MÉTODOS PARA EL SELECTOR DE GRUPOS ---
+
+  public onPlaylistChange(playlistId: any | undefined): void {
+    this.allGroups = [];
+    this.selectedGroups = [];
+    this.selectedGroupIds = [];
+    this.groupSearchTerm = '';
+
+    if (playlistId) {
+
+      this.playlistsService.getGroupsByPlaylistId(playlistId._id).subscribe(groups => {
+
+        this.allGroups = groups;
+      });
+    }
+  }
+
+  get filteredGroups(): Group[] {
+    const availableGroups = this.allGroups.filter(group =>
+      !this.selectedGroups.find(sg => sg._id === group._id)
+    );
+
+    if (!this.groupSearchTerm) {
+      return availableGroups;
+    }
+
+    return availableGroups.filter(group => {
+      const groupName = group.name || '';
+      return groupName.toLowerCase().includes(this.groupSearchTerm.toLowerCase());
+    });
+  }
+
+  public selectGroup(group: Group): void {
+    this.selectedGroups.push(group);
+    this.selectedGroupIds = this.selectedGroups.map(g => g._id);
+    this.groupSearchTerm = '';
+    this.isDropdownOpen = false;
+  }
+
+  public removeGroup(groupToRemove: Group): void {
+    this.selectedGroups = this.selectedGroups.filter(group => group._id !== groupToRemove._id);
+    this.selectedGroupIds = this.selectedGroups.map(g => g._id);
+  }
+
+  public closeDropdownWithDelay(): void {
+    setTimeout(() => {
+      this.isDropdownOpen = false;
+    }, 200);
+  }
+
+  // --- MÉTODOS EXISTENTES MODIFICADOS ---
 
   public startRelaxSession(): void {
     if (!this.selectedPlaylistId) {
@@ -69,13 +128,14 @@ export class RelaxNew implements OnInit, OnDestroy {
       playlistId: this.selectedPlaylistId,
       orderBy: this.order,
       limit: this.limit,
+      groupIds: this.selectedGroupIds, // <-- 👇 Se añaden los IDs de los grupos
     };
 
     const phrasesSub = this.phrasesService.createRelaxSession(config).subscribe({
+      // ... (resto del método sin cambios)
       next: (phrases) => {
         this.phrases = phrases;
         this.currentPhraseIndex = 0;
-        
         if (this.phrases.length > 0) {
           this.playCurrentPhrase();
         } else {
@@ -93,6 +153,21 @@ export class RelaxNew implements OnInit, OnDestroy {
     this.subscriptions.add(phrasesSub);
   }
 
+  public changeSettings(): void {
+    this.isPlaying = false;
+    this.stopAudio();
+    this.settingsDone = false;
+    this.phrases = [];
+    this.currentPhraseIndex = 0;
+
+    // --- 👇 Se resetean las variables de grupos ---
+    this.allGroups = [];
+    this.selectedGroups = [];
+    this.selectedGroupIds = [];
+    this.groupSearchTerm = '';
+  }
+
+  // --- (resto de métodos como togglePause, playCurrentPhrase, etc., sin cambios) ---
   public togglePause(): void {
     this.isPaused = !this.isPaused;
     if (this.isPaused) {
@@ -126,16 +201,16 @@ export class RelaxNew implements OnInit, OnDestroy {
     const femaleAudio = phrase.translations[0]?.audios.find(a => a.gender === 'femenino')?.audioUrl;
     const maleAudio = phrase.translations[0]?.audios.find(a => a.gender === 'masculino')?.audioUrl;
 
- if (this.repeatSpanishAudio && phrase.originAudioUrl && phrase.originAudioUrl !== 'audio.pendiente.mp3') {
+    if (this.repeatSpanishAudio && phrase.originAudioUrl && phrase.originAudioUrl !== 'audio.pendiente.mp3') {
       this.audioQueue.push(phrase.originAudioUrl);
     }
 
     if (femaleAudio && femaleAudio !== 'audio.pendiente.mp3') this.audioQueue.push(femaleAudio);
     if (maleAudio && maleAudio !== 'audio.pendiente.mp3') this.audioQueue.push(maleAudio);
-    
-   
 
-    if(this.audioQueue.length === 0) {
+
+
+    if (this.audioQueue.length === 0) {
       console.warn(`Sin audios válidos para: "${phrase.originalText}"`);
       this.moveToNextPhrase();
       return;
@@ -149,7 +224,7 @@ export class RelaxNew implements OnInit, OnDestroy {
     });
   }
 
-  private playAudioQueue(onComplete: () => void = () => {}): void {
+  private playAudioQueue(onComplete: () => void = () => { }): void {
     if (this.isPaused || !this.isPlaying || this.audioQueueIndex >= this.audioQueue.length) {
       if (this.audioQueueIndex >= this.audioQueue.length) onComplete();
       return;
@@ -179,16 +254,14 @@ export class RelaxNew implements OnInit, OnDestroy {
       this.currentAudio.onerror = null;
       this.currentAudio = null;
     }
-    if(resetPauseState) {
-        this.isPaused = false;
+    if (resetPauseState) {
+      this.isPaused = false;
     }
   }
 
   public moveToNextPhrase(): void {
     this.currentPhraseIndex++;
-    // --- 👇 AQUÍ ESTÁ LA CORRECCIÓN ---
-    // Forzamos la detección de cambios para que la vista se actualice con la nueva frase.
-    this.cdr.detectChanges(); 
+    this.cdr.detectChanges();
     this.playCurrentPhrase();
   }
 
@@ -196,13 +269,5 @@ export class RelaxNew implements OnInit, OnDestroy {
     this.phrasesService.incrementRelaxListen(phraseId).subscribe({
       error: (err) => console.error('Error al actualizar estadísticas:', err),
     });
-  }
-
-  public changeSettings(): void {
-    this.isPlaying = false;
-    this.stopAudio();
-    this.settingsDone = false;
-    this.phrases = [];
-    this.currentPhraseIndex = 0;
   }
 }

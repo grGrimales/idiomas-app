@@ -26,10 +26,8 @@ export class AuthComponent {
 
   onSubmit() {
     if (this.isLoginMode) {
-      console.log(this.email, this.password);
       this.authService.login(this.email, this.password).subscribe({
         next: () => {
-          console.log('Login successful');
           this.router.navigate(['/']); // Ahora esto funcionará
         },
         error: (err) => (this.errorMessage = err.error.message),

@@ -33,6 +33,11 @@ export interface Phrase {
   hasProblem?: boolean;
 }
 
+export interface Group {
+  _id: string;
+  name: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -47,5 +52,11 @@ export class PlaylistsService {
 
   getUserPlaylists(): Observable<Playlist[]> {
     return this.http.get<Playlist[]>(`${this.apiUrl}/user`);
+  }
+
+
+   getGroupsByPlaylistId(playlistId: string): Observable<Group[]> {
+
+    return this.http.get<Group[]>(`${this.apiUrl}/${playlistId}/groups`);
   }
 }

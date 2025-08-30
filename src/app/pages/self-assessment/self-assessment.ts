@@ -105,7 +105,6 @@ export class SelfAssessmentComponent implements OnInit, OnDestroy {
 
 
     this.phrasesService.updateAssessmentStats(this.currentPhrase._id, isCorrect).subscribe({
-      next: () => console.log('Estadísticas actualizadas'),
       error: (err) => console.error('Error al actualizar estadísticas', err)
     });
 

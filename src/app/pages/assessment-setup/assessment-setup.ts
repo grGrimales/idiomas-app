@@ -33,9 +33,7 @@ export class AssessmentSetupComponent implements OnInit {
 
   startAssessment(): void {
     this.phrasesService.createAssessmentSession(this.config).subscribe(phrases => {
-      console.log('Frases para la evaluación:', phrases);
       if (phrases && phrases.length > 0) {
-        console.log('Iniciando sesión de evaluación...');
         this.assessmentService.setPhrases(phrases);
         this.router.navigate(['/self-assessment']); // Navega a la evaluación
       } else {

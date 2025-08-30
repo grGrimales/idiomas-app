@@ -32,7 +32,6 @@ export class Navbar {
   refreshData(context: string) {
     this.sheetService.refreshCsvData('lucia').subscribe({
       next: (data) => {
-        console.log('Datos de Lucía actualizados:', data);
       },
       error: (error) => {
         console.error('Error al actualizar los datos de Lucía:', error);
@@ -41,7 +40,6 @@ export class Navbar {
 
     this.sheetService.refreshCsvData('carlos_grediana').subscribe({
       next: (data) => {
-        console.log('Datos de Carlos/Grediana actualizados:', data);
       },
       error: (error) => {
         console.error('Error al actualizar los datos de Carlos/Grediana:', error);

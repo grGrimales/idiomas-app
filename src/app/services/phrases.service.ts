@@ -64,7 +64,6 @@ export class PhrasesService {
   }
 
   incrementRelaxListen(phraseId: string): Observable<any> {
-    console.log('Incrementing relax listen count for phrase:', phraseId);
     return this.http.post(`${this.apiUrl}/statistics/relax-listen/${phraseId}`, {});
   }
 

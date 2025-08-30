@@ -144,7 +144,6 @@ export class AudioUploaderComponent implements OnInit {
           this.uploadedAudios.push(newAudio); // Agrega la nueva URL al array
           this.selectedFile = null; // Limpiar el archivo seleccionado después de subir
           this.uploadMessage = `"${newAudio.name}" subido con éxito a "${newAudio.folder}". URL añadida a la lista.`;
-          console.log('Audio subido con éxito:', newAudio.url, 'en carpeta:', newAudio.folder);
         } else {
           const errorData = JSON.parse(xhr.responseText);
           this.uploadMessage = `Error al subir el audio: ${errorData.error ? errorData.error.message : 'Error desconocido'}`;
