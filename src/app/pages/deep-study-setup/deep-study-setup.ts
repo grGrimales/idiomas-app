@@ -76,6 +76,7 @@ export class DeepStudySetupComponent implements OnInit {
 
     if (playlistId) {
       this.playlistsService.getGroupsByPlaylistId(playlistId).subscribe(groups => {
+
         this.allGroups = groups;
       });
     }

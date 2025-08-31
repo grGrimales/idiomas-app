@@ -57,6 +57,8 @@ export class PlaylistsService {
 
    getGroupsByPlaylistId(playlistId: string): Observable<Group[]> {
 
+    
+
     return this.http.get<Group[]>(`${this.apiUrl}/${playlistId}/groups`);
   }
 }
