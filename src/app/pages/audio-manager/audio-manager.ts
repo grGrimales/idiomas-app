@@ -25,6 +25,11 @@ export class AudioManagerComponent implements OnInit, OnDestroy {
   private audioPlayer = new Audio();
   public currentlyPlayingUrl: string | null = null;
 
+  showOnlyWithAudio: boolean = false;
+
+  // ordenar aleatoriamente
+  showRandomOrder: boolean = false;
+
   constructor(
     private phrasesService: PhrasesService,
     private playlistsService: PlaylistsService,
@@ -44,6 +49,28 @@ export class AudioManagerComponent implements OnInit, OnDestroy {
   loadPhrases(): void {
     this.phrasesService.getPhrasesWithMissingAudio(this.sortBy, this.selectedPlaylistId).subscribe({
       next: (data: Phrase[]) => {
+
+        if (this.showOnlyWithAudio) {
+          data = data.filter(phrase => 
+            phrase.originAudioUrl !== 'audio.pendiente.mp3' ||
+            phrase.translations.some(t => t.audios.some(a => a.audioUrl !== 'audio.pendiente.mp3'))
+          );
+        } else {
+          data = data.filter(phrase => 
+            phrase.originAudioUrl === 'audio.pendiente.mp3' ||
+            phrase.translations.some(t => t.audios.some(a => a.audioUrl === 'audio.pendiente.mp3'))
+          );
+        }
+
+        if (this.showRandomOrder) {
+          for (let i = data.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [data[i], data[j]] = [data[j], data[i]];
+          }
+        }
+
+
+        console.log('Frases cargadas:', data);
         this.phrases = data;
         this.cdr.detectChanges();
       },
