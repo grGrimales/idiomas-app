@@ -26,6 +26,7 @@ export class AudioManagerComponent implements OnInit, OnDestroy {
   public currentlyPlayingUrl: string | null = null;
 
   showOnlyWithAudio: boolean = false;
+    public copiedPhrases: { [key: string]: boolean } = {}; 
 
   // ordenar aleatoriamente
   showRandomOrder: boolean = false;
@@ -182,4 +183,24 @@ export class AudioManagerComponent implements OnInit, OnDestroy {
     this.audioPlayer.pause();
     this.audioPlayer.onended = null;
   }
+
+
+copyToClipboard(text: string, phraseId: string): void {
+  navigator.clipboard.writeText(text).then(() => {
+    // Éxito al copiar
+    this.copiedPhrases[phraseId] = true; // Activar feedback visual
+    this.cdr.detectChanges(); // Notificar a Angular del cambio
+
+    // Ocultar el feedback después de 2 segundos
+    setTimeout(() => {
+      this.copiedPhrases[phraseId] = false;
+      this.cdr.detectChanges();
+    }, 2000);
+
+  }).catch(err => {
+    // Error al copiar
+    console.error('Error al copiar texto al portapapeles: ', err);
+    alert('No se pudo copiar el texto.'); // Opcional: notificar al usuario del error
+  });
+}
 }

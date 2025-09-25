@@ -24,7 +24,7 @@ export class RelaxNew implements OnInit, OnDestroy {
   public playlists: Playlist[] = [];
   public selectedPlaylistId: string | undefined = undefined;
   public order: 'random' | 'less-heard' = 'random';
-  public limit = 10;
+  public limit = 60;
   // ... (otras propiedades existentes) ...
   public repeatSpanishAudio = true;
   public repeatCycles = 2;

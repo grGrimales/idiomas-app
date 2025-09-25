@@ -18,7 +18,7 @@ export class DeepStudySetupComponent implements OnInit {
   config = {
     playlistId: undefined,
     orderBy: 'least_studied',
-    limit: 10,
+    limit: 25,
     groupIds: [] as string[] 
   };
 
