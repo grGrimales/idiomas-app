@@ -14,33 +14,35 @@ import { AssessmentService } from '../../services/assessment.service';
 })
 export class DeepStudySetupComponent implements OnInit {
   playlists: Playlist[] = [];
-  
+
   config = {
     playlistId: undefined,
     orderBy: 'least_studied',
     limit: 25,
-    groupIds: [] as string[] 
+    groupIds: [] as string[]
   };
 
   allGroups: Group[] = [];
   selectedGroups: Group[] = [];
   groupSearchTerm: string = '';
   isDropdownOpen: boolean = false;
-  
+
   constructor(
     private playlistsService: PlaylistsService,
     private phrasesService: PhrasesService,
     private assessmentService: AssessmentService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.playlistsService.getPlaylists().subscribe(data => this.playlists = data);
   }
-  
+
   get filteredGroups(): Group[] {
+
+    console.log('All Groups:', this.allGroups);
     // Primero, obtenemos todos los grupos que aún no han sido seleccionados.
-    const availableGroups = this.allGroups.filter(group => 
+    const availableGroups = this.allGroups.filter(group =>
       !this.selectedGroups.find(sg => sg._id === group._id)
     );
 
