@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-bold text-gray-800">Gestor de Audios</h1>
   <p class="text-gray-600 mt-2 mb-6">Arrastra y suelta los archivos de audio en las cajas correspondientes para asociarlos a cada frase.</p>
 
-  <div class="filters bg-gray-100 p-4 rounded-lg mb-6 flex items-center space-x-4">
+  <div class="filters bg-gray-100 p-4 rounded-lg mb-6 flex flex-wrap items-center gap-4">
     <div>
       <label for="sort-by" class="block text-sm font-medium text-gray-700">Ordenar por:</label>
       <select id="sort-by" [(ngModel)]="sortBy" (change)="loadPhrases()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
@@ -10,11 +10,20 @@
         <option value="createdAt_asc">Más antiguos primero</option>
       </select>
     </div>
+
     <div>
       <label for="playlist" class="block text-sm font-medium text-gray-700">Filtrar por Playlist:</label>
       <select id="playlist" [(ngModel)]="selectedPlaylistId" (change)="loadPhrases()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
         <option value="todas">Todas las frases</option>
         <option *ngFor="let playlist of playlists" [value]="playlist._id">{{ playlist.name }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="group-filter" class="block text-sm font-medium text-gray-700">Filtrar por Grupo:</label>
+      <select id="group-filter" [(ngModel)]="selectedGroup" (change)="filterByGroup()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+        <option value="">Todos los grupos</option>
+        <option *ngFor="let group of groups" [value]="group">{{ group }}</option>
       </select>
     </div>
 
@@ -30,36 +39,43 @@
         <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" [(ngModel)]="showRandomOrder" (change)="loadPhrases()">
         <span class="ml-2 text-gray-700">Ordenar aleatoriamente</span>
       </label>
-
     </div>
   </div>
 
-  <div *ngIf="phrases.length === 0" class="no-phrases-message text-center p-4 bg-green-100 text-green-700 rounded-lg">
-    <p>🎉 ¡No hay frases pendientes! Todos los audios están completos. 🎉</p>
+  <div *ngIf="filteredPhrases.length === 0" class="no-phrases-message text-center p-4 bg-green-100 text-green-700 rounded-lg">
+    <p *ngIf="phrases.length === 0">🎉 ¡No hay frases pendientes! Todos los audios están completos. 🎉</p>
+    <p *ngIf="phrases.length > 0">No hay frases en este grupo.</p>
   </div>
 
   <div class="phrase-list space-y-6">
-    <div *ngFor="let phrase of phrases" class="phrase-card bg-white p-6 rounded-lg shadow-md border border-gray-200">
+    <div *ngFor="let phrase of filteredPhrases" class="phrase-card bg-white p-6 rounded-lg shadow-md border border-gray-200">
+      
+      <div *ngIf="phrase.group" class="mb-2">
+         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+           {{ phrase.group }}
+         </span>
+      </div>
+
       <h2 class="text-xl font-semibold text-gray-900">{{ phrase.originalText }}</h2>
-   <div *ngIf="phrase.translations.length > 0" class="flex items-center text-gray-700 mt-1">
-  <p>
-    <strong>{{ phrase.translations[0].language | uppercase }}:</strong> "{{ phrase.translations[0].translatedText }}"
-  </p>
-  
-  <button 
-    (click)="copyToClipboard(phrase.translations[0].translatedText, phrase._id)"
-    class="ml-2 p-1 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-    title="Copiar texto">
-    
-    <svg *ngIf="copiedPhrases[phrase._id]" class="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-    </svg>
-    
-    <svg *ngIf="!copiedPhrases[phrase._id]" class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-    </svg>
-  </button>
-</div>
+      <div *ngIf="phrase.translations.length > 0" class="flex items-center text-gray-700 mt-1">
+        <p>
+          <strong>{{ phrase.translations[0].language | uppercase }}:</strong> "{{ phrase.translations[0].translatedText }}"
+        </p>
+        
+        <button 
+          (click)="copyToClipboard(phrase.translations[0].translatedText, phrase._id)"
+          class="ml-2 p-1 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          title="Copiar texto">
+          
+          <svg *ngIf="copiedPhrases[phrase._id]" class="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          
+          <svg *ngIf="!copiedPhrases[phrase._id]" class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </button>
+      </div>
 
       <div class="audio-slots grid grid-cols-1 md:grid-cols-3 gap-6 mt-4 border-t border-gray-200 pt-4">
         

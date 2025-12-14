@@ -31,6 +31,10 @@ export interface Phrase {
   createdBy: any;
   translations: Translation[];
   hasProblem?: boolean;
+  // AGREGA ESTA LÍNEA:
+  group?: string;
+  groupId?: number | string;
+
 }
 
 export interface Group {
@@ -42,7 +46,7 @@ export interface Group {
   providedIn: 'root'
 })
 export class PlaylistsService {
-  private apiUrl =  `${environment.backendUrl}/playlists`;
+  private apiUrl = `${environment.backendUrl}/playlists`;
 
   constructor(private http: HttpClient) { }
 
@@ -55,9 +59,9 @@ export class PlaylistsService {
   }
 
 
-   getGroupsByPlaylistId(playlistId: string): Observable<Group[]> {
+  getGroupsByPlaylistId(playlistId: string): Observable<Group[]> {
 
-    
+
 
     return this.http.get<Group[]>(`${this.apiUrl}/${playlistId}/groups`);
   }
